@@ -25,19 +25,32 @@ class Animation(Scene):
         )
 
         steveFrame = Axes(
-            x_range=[0, 10, 1],
-            y_range=[0, 10, 2],
-            x_length=5,
-            y_length=5,
+            x_range=[0, 15, 1],
+            y_range=[0, 15, 1],
+            # x_length=5,
+            # y_length=5,
             tips=True,
             axis_config={"stroke_color": WHITE},
             x_axis_config={"include_ticks" : False, "include_numbers": False},
+            y_axis_config={"include_ticks" : True, "include_numbers": True},
         )
+
+        y_label = steveFrame.get_y_axis_label("t", edge=LEFT, direction=LEFT, buff=0.4)
+        x_label = steveFrame.get_x_axis_label("x")
+
         ryanGraphSteveFrame = steveFrame.plot(lambda x: x,
-                        x_range=[0, 10], use_smoothing=True, color=RED)
+                        x_range=[0, 15], use_smoothing=True, color=RED)
 
-        steveGraphSteveFrame = steveFrame.get_vertical_line(steveFrame.c2p(0, 10, 0), color=BLUE, line_config={"dashed_ratio": 1.5}, stroke_width=5)
+        steveGraphSteveFrame = steveFrame.get_vertical_line(steveFrame.c2p(0, 15, 0), color=BLUE, line_config={"dashed_ratio": 1.5}, stroke_width=4)
 
-        self.add(title)
-        self.play(Create(steveFrame), run_time=2)
-        self.play(Create(ryanGraphSteveFrame), Create(steveGraphSteveFrame), run_time=2)
+        rays = []
+        for i in range(1,7):
+            m = 2
+            rays.append(Create(steveFrame.plot(lambda x: i + x/m, x_range=[0, i/(1-1/m)], use_smoothing=True, color=WHITE)))
+
+        self.play(Create(title), run_time=1)
+        self.play(Create(steveFrame), Create(y_label), Create(x_label), run_time=3)
+        self.play(Create(steveGraphSteveFrame), run_time=2)
+        self.play(Create(ryanGraphSteveFrame), run_time=2)
+        self.play(*rays)
+        self.wait(3)
