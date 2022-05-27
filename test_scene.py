@@ -49,8 +49,9 @@ class Animation(Scene):
             rays.append(Create(steveFrame.plot(lambda x: i + x/m, x_range=[0, i/(1-1/m)], use_smoothing=True, color=WHITE)))
 
         self.play(Create(title), run_time=1)
-        self.play(Create(steveFrame), Create(y_label), Create(x_label), run_time=3)
+        self.play(Create(steveFrame), FadeIn(y_label), FadeIn(x_label), run_time=3)
         self.play(Create(steveGraphSteveFrame), run_time=2)
         self.play(Create(ryanGraphSteveFrame), run_time=2)
-        self.play(*rays)
+        for ray in rays:
+            self.play(ray)
         self.wait(3)
