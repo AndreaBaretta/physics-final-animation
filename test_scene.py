@@ -35,23 +35,35 @@ class Animation(Scene):
             y_axis_config={"include_ticks" : True, "include_numbers": True},
         )
 
-        y_label = steveFrame.get_y_axis_label("t", edge=LEFT, direction=LEFT, buff=0.4)
-        x_label = steveFrame.get_x_axis_label("x")
+        y_label = steveFrame.get_y_axis_label(r"t", edge=LEFT, direction=LEFT, buff=0.4)
+        x_label = steveFrame.get_x_axis_label(r"x", edge=DOWN, direction=DOWN)
 
         ryanGraphSteveFrame = steveFrame.plot(lambda x: x,
                         x_range=[0, 15], use_smoothing=True, color=RED)
 
-        steveGraphSteveFrame = steveFrame.get_vertical_line(steveFrame.c2p(0, 15, 0), color=BLUE, line_config={"dashed_ratio": 1.5}, stroke_width=4)
+        ryanLabel = steveFrame.get_graph_label(ryanGraphSteveFrame, Tex("Ryan's Path", font_size=35), x_val=15, direction=UR)
+
+        steveGraphSteveFrame = steveFrame.get_vertical_line(steveFrame.c2p(0, 15, 0), color=BLUE, line_func=Line, stroke_width=4)
+
+        # steveLabel = steveFrame.get_graph_label(steveGraphSteveFrame, "Steve's Path", x_val=0, direction=UP / 2)
+
+        steveLabel = steveFrame.get_graph_label(
+            ryanGraphSteveFrame, Tex("Steve's Path", font_size=35), x_val=0, direction=DOWN, color=BLUE
+        )
 
         rays = []
+        horizontal_lines = []
         for i in range(1,7):
             m = 2
             rays.append(Create(steveFrame.plot(lambda x: i + x/m, x_range=[0, i/(1-1/m)], use_smoothing=True, color=WHITE)))
+            horizontal_lines.append(Create(DashedVMobject(steveFrame.plot(lambda x: i/(1-1/m), x_range=[0, i/(1-1/m)], use_smoothing=True, color=ORANGE))))
 
         self.play(Create(title), run_time=1)
         self.play(Create(steveFrame), FadeIn(y_label), FadeIn(x_label), run_time=3)
         self.play(Create(steveGraphSteveFrame), run_time=2)
+        self.play(FadeIn(steveLabel))
         self.play(Create(ryanGraphSteveFrame), run_time=2)
+        self.play(FadeIn(ryanLabel))
         for ray in rays:
             self.play(ray)
         self.wait(3)
